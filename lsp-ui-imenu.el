@@ -149,6 +149,15 @@ ie. it will not be affected by `balance-windows' etc."
     (add-text-properties 0 len `(index ,index title ,title marker ,(cdr entry)
                                        padding ,padding depth, depth)
                          text)
+    ;; Also make the line clickable
+    (let ((map (make-sparse-keymap)))
+      (define-key map [mouse-1]
+	(lambda (event) (interactive "e")
+	  (posn-set-point (event-end event))
+	  (lsp-ui-imenu--view)))
+      (add-text-properties (- len 1 (length (car entry))) (- len 1)
+			   `(mouse-face highlight keymap ,map)
+			   text))
     text))
 
 (defvar-local lsp-ui-imenu-ov nil
